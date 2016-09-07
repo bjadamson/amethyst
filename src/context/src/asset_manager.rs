@@ -14,13 +14,14 @@ use self::gfx::Factory;
 use self::gfx::format::{Formatted, SurfaceTyped};
 use self::amethyst_renderer::VertexPosNormal;
 use self::amethyst_renderer::target::ColorFormat;
+// use self::
 
 use self::genmesh::generators::{SphereUV, Cube};
 use self::genmesh::{MapToVertices, Triangulate, Vertices};
 use self::cgmath::{Vector3, InnerSpace};
 
 use std::collections::HashMap;
-use renderer::{Fragment, FragmentImpl};
+use renderer::{Fragment, FragmentImpl, MeshID, TextureID};
 
 /// An enum with variants representing concrete
 /// `Factory` types compatible with different backends.
@@ -36,8 +37,8 @@ pub enum FactoryImpl {
 /// A struct which allows loading and accessing assets.
 pub struct AssetManager {
     factory_impl: FactoryImpl,
-    meshes: HashMap<String, Mesh>,
-    textures: HashMap<String, Texture>,
+    meshes: HashMap<MeshID, Mesh>,
+    textures: HashMap<TextureID, Texture>,
 }
 
 impl AssetManager {
@@ -50,7 +51,7 @@ impl AssetManager {
         }
     }
     /// Load a `Mesh` from vertex data.
-    pub fn load_mesh(&mut self, name: &str, data: &Vec<VertexPosNormal>) {
+    pub fn load_mesh(&mut self, id: MeshID, data: &Vec<VertexPosNormal>) {
         match self.factory_impl {
             FactoryImpl::OpenGL { ref mut factory } => {
                 let (buffer, slice) = factory.create_vertex_buffer_with_slice(&data, ());
@@ -59,7 +60,7 @@ impl AssetManager {
                     slice: slice,
                 };
                 let mesh = Mesh { mesh_impl: mesh_impl };
-                self.meshes.insert(name.into(), mesh);
+                self.meshes.insert(id, mesh);
             }
             #[cfg(windows)]
             FactoryImpl::Direct3D {} => {
@@ -70,7 +71,7 @@ impl AssetManager {
     }
     /// Generate and load a sphere mesh using the number of vertices accross the equator (u)
     /// and the number of vertices from pole to pole (v).
-    pub fn gen_sphere(&mut self, name: &str, u: usize, v: usize) {
+    pub fn gen_sphere(&mut self, id: MeshID, u: usize, v: usize) {
         let data: Vec<VertexPosNormal> = SphereUV::new(u, v)
             .vertex(|(x, y, z)| {
                 VertexPosNormal {
@@ -82,10 +83,10 @@ impl AssetManager {
             .triangulate()
             .vertices()
             .collect();
-        self.load_mesh(name, &data);
+        self.load_mesh(id, &data);
     }
     /// Generate and load a cube mesh.
-    pub fn gen_cube(&mut self, name: &str) {
+    pub fn gen_cube(&mut self, id: MeshID) {
         let data: Vec<VertexPosNormal> = Cube::new()
             .vertex(|(x, y, z)| {
                 VertexPosNormal {
@@ -97,10 +98,10 @@ impl AssetManager {
             .triangulate()
             .vertices()
             .collect();
-        self.load_mesh(name, &data);
+        self.load_mesh(id, &data);
     }
     /// Generate and load a rectangle mesh in XY plane with given `width` and `height`.
-    pub fn gen_rectangle(&mut self, name: &str, width: f32, height: f32) {
+    pub fn gen_rectangle(&mut self, id: MeshID, width: f32, height: f32) {
         let data = vec![
             VertexPosNormal {
                 pos: [-width/2., height/2., 0.],
@@ -133,17 +134,17 @@ impl AssetManager {
                 tex_coord: [1., 0.],
             },
         ];
-        self.load_mesh(name, &data);
+        self.load_mesh(id, &data);
     }
-    /// Lookup a `Mesh` by name.
-    pub fn get_mesh(&mut self, name: &str) -> Option<Mesh> {
-        match self.meshes.get(name.into()) {
+    /// Lookup a `Mesh` by id.
+    pub fn get_mesh(&mut self, id: MeshID) -> Option<Mesh> {
+        match self.meshes.get(&id) {
             Some(mesh) => Some((*mesh).clone()),
             None => None,
         }
     }
     /// Load a `Texture` from pixel data.
-    pub fn load_texture(&mut self, name: &str, kind: Kind, data: &[&[<<ColorFormat as Formatted>::Surface as SurfaceTyped>::DataType]]) {
+    pub fn load_texture(&mut self, id: TextureID, kind: Kind, data: &[&[<<ColorFormat as Formatted>::Surface as SurfaceTyped>::DataType]]) {
         match self.factory_impl {
             FactoryImpl::OpenGL { ref mut factory } => {
                 let shader_resource_view = match factory.create_texture_const::<ColorFormat>(kind, data) {
@@ -153,7 +154,7 @@ impl AssetManager {
                 let texture = amethyst_renderer::Texture::Texture(shader_resource_view);
                 let texture_impl = TextureImpl::OpenGL { texture: texture };
                 let texture = Texture { texture_impl: texture_impl };
-                self.textures.insert(name.into(), texture);
+                self.textures.insert(id, texture);
             }
             #[cfg(windows)]
             FactoryImpl::Direct3D {} => {
@@ -163,22 +164,22 @@ impl AssetManager {
         }
     }
     /// Create a constant solid color `Texture` from a specified color.
-    pub fn create_constant_texture(&mut self, name: &str, color: [f32; 4]) {
+    pub fn create_constant_texture(&mut self, id: TextureID, color: [f32; 4]) {
         let texture = amethyst_renderer::Texture::Constant(color);
         let texture_impl = TextureImpl::OpenGL { texture: texture };
         let texture = Texture { texture_impl: texture_impl };
-        self.textures.insert(name.into(), texture);
+        self.textures.insert(id, texture);
     }
-    /// Lookup a `Texture` by name.
-    pub fn get_texture(&mut self, name: &str) -> Option<Texture> {
-        match self.textures.get(name.into()) {
+    /// Lookup a `Texture` by id.
+    pub fn get_texture(&mut self, id: TextureID) -> Option<Texture> {
+        match self.textures.get(&id) {
             Some(texture) => Some((*texture).clone()),
             None => None,
         }
     }
     /// Construct and return a `Fragment` from previously loaded mesh, ka and kd textures and a transform matrix.
-    pub fn get_fragment(&mut self, mesh: &str, ka: &str, kd: &str, transform: [[f32; 4]; 4]) -> Option<Fragment> {
-        let mesh = match self.get_mesh(mesh) {
+    pub fn get_fragment(&mut self, id: MeshID, ka: TextureID, kd: TextureID, transform: [[f32; 4]; 4]) -> Option<Fragment> {
+        let mesh = match self.get_mesh(id) {
             Some(mesh) => mesh,
             None => return None,
         };
