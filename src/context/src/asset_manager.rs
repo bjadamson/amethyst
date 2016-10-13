@@ -14,7 +14,6 @@ use self::gfx::Factory;
 use self::gfx::format::{Formatted, SurfaceTyped};
 use self::amethyst_renderer::VertexPosNormal;
 use self::amethyst_renderer::target::ColorFormat;
-// use self::
 
 use self::genmesh::generators::{SphereUV, Cube};
 use self::genmesh::{MapToVertices, Triangulate, Vertices};
