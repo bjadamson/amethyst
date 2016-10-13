@@ -309,3 +309,15 @@ pub enum FragmentImpl {
 pub struct Fragment {
     pub fragment_impl: FragmentImpl,
 }
+
+/// An opaque handle for a "mesh" resource.
+#[derive(Clone, Eq, PartialEq, Hash)]
+pub struct MeshID {
+    id: i64,
+}
+
+/// An opaque handle for a "texture" resource.
+#[derive(Clone, Eq, PartialEq, Hash)]
+pub struct TextureID {
+    id: i64,
+}
