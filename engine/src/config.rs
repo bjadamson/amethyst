@@ -1,7 +1,7 @@
-use context::ContextConfig;
-use processors::rendering::RendererConfig;
+use amethyst_context::ContextConfig;
+use amethyst_processors::RendererConfig;
 
-use config::Element;
+use amethyst_config::Element;
 use std::path::Path;
 
 config!(

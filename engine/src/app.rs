@@ -1,10 +1,9 @@
 //! The core engine framework.
-
 use super::state::{State, StateMachine};
-use context::timing::Stopwatch;
-use context::event::EngineEvent;
-use context::Context;
-use ecs::{Planner, World, Processor, Priority, Component};
+use amethyst_context::timing::Stopwatch;
+use amethyst_context::event::EngineEvent;
+use amethyst_context::Context;
+use amethyst_ecs::{Planner, World, Processor, Priority, Component};
 use std::sync::{Arc, Mutex};
 use std::ops::DerefMut;
 

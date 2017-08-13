@@ -1,52 +1,12 @@
-[package]
-name = "amethyst"
-version = "0.3.1"
-authors = ["Eyal Kalderon <ebkalderon@gmail.com>"]
-description = "Data-oriented game engine written in Rust"
-keywords = ["game", "engine", "sdk", "amethyst"]
+[workspace]
 
-documentation = "https://www.amethyst.rs/doc/amethyst"
-homepage = "https://www.amethyst.rs/"
-repository = "https://github.com/amethyst/amethyst"
-
-readme = "README.md"
-license = "MIT"
-
-[dependencies.amethyst_config]
-path = "src/config/"
-version = "0.1.0"
-
-[dependencies.amethyst_context]
-path = "src/context/"
-version = "0.1.0"
-
-[dependencies.amethyst_ecs]
-path = "src/ecs/"
-version = "0.1.1"
-
-[dependencies.amethyst_renderer]
-path = "src/renderer/"
-version = "0.3.1"
-
-[[example]]
-name = "hello_world"
-path = "examples/00_hello_world/main.rs"
-
-[[example]]
-name = "window"
-path = "examples/01_window/main.rs"
-
-[[example]]
-name = "sphere"
-path = "examples/02_sphere/main.rs"
-
-[[example]]
-name = "renderable"
-path = "examples/03_renderable/main.rs"
-
-[[example]]
-name = "pong"
-path = "examples/04_pong/main.rs"
-
-[dependencies]
-cgmath="0.11"
+members = [
+    "amethyst",
+    "config",
+    "context",
+    "ecs",
+    "engine",
+    "examples",
+    "processors",
+    "renderer",
+]

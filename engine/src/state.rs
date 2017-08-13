@@ -1,7 +1,7 @@
 //! Utilities for game state management.
 
-use context::Context;
-use ecs::{Entity, Planner, World};
+use amethyst_context::Context;
+use amethyst_ecs::{Entity, Planner, World};
 use std::sync::{Arc, Mutex};
 
 /// Types of state transitions.
@@ -203,8 +203,8 @@ impl StateMachine {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use context::{ContextConfig, Context};
-    use ecs::{Planner, World};
+    use amethyst_context::{ContextConfig, Context};
+    use amethyst_ecs::{Planner, World};
 
     struct State1(u8);
     struct State2;

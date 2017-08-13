@@ -4,6 +4,7 @@ version = "0.1.0"
 authors = ["Nikita Chashchinskii <nikita.chashinsky@yandex.ru>"]
 description = "A way to manage engine resources"
 keywords = ["game", "engine", "amethyst"]
+workspace = ".."
 
 documentation = "https://www.amethyst.rs/doc/amethyst/"
 homepage = "https://www.amethyst.rs/"

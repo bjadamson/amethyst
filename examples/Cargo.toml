@@ -1,0 +1,31 @@
+[package]
+name = "amethyst_examples"
+version = "0.3.1"
+workspace = ".."
+
+[dependencies.amethyst]
+path = "../amethyst/"
+version = "0.1.0"
+
+[[example]]
+name = "hello_world"
+path = "hello_world/main.rs"
+
+[[example]]
+name = "window"
+path = "window/main.rs"
+
+[[example]]
+name = "sphere"
+path = "sphere/main.rs"
+
+[[example]]
+name = "renderable"
+path = "renderable/main.rs"
+
+[[example]]
+name = "pong"
+path = "pong/main.rs"
+
+[dependencies]
+cgmath="0.11"

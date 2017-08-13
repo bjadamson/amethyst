@@ -1,4 +1,10 @@
 //! Game engine sitting atop the core libraries.
+#[macro_use]
+extern crate amethyst_config;
+extern crate amethyst_context;
+extern crate amethyst_ecs;
+extern crate amethyst_processors;
+extern crate amethyst_renderer;
 
 mod app;
 mod state;

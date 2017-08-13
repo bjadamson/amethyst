@@ -1,15 +1,20 @@
 //! Default rendering processor types.
 
 extern crate cgmath;
+#[macro_use]
+extern crate amethyst_config as config;
+extern crate amethyst_context as context;
+extern crate amethyst_ecs as ecs;
+extern crate amethyst_renderer as renderer;
 
 use ecs::{Processor, RunArg, Join, Component, VecStorage, Entity};
+use config::Element;
 use context::renderer::{MeshID, TextureID};
 use context::Context;
-use std::sync::{Mutex, Arc};
-use renderer;
 use renderer::Layer;
+
+use std::sync::{Mutex, Arc};
 use std::collections::HashSet;
-use config::Element;
 use std::path::Path;
 
 config!(

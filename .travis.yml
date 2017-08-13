@@ -29,7 +29,9 @@ script: |
       cargo fmt -- --write-mode=diff &&
       cargo local-pkgs doc --no-deps -v
       cargo local-pkgs build -v &&
-      cargo test -p amethyst -p amethyst_config -p amethyst_context -p amethyst_ecs -v
+
+# TODO: Exclude amethyst_examples until they are fixed (currently broken on develop branch).
+      cargo test --all -v --exclude amethyst_examples
 
 # Push notifications to `amethyst/general` and `amethyst/engine` Gitter chats.
 notifications:
